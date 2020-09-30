@@ -68,6 +68,25 @@ class DocData {
 
   int get wordCount => comment.split(' ').length;
 
+  bool get hasYouTube => comment.contains('@youtube');
+
+  bool get hasDartPad => comment.contains('@tool dartpad');
+
+  bool get hasSeeAlso => comment.contains('See also:');
+
+  int get referenceCount {
+    var regex = RegExp(r'\[[A-z. ]*\](?!\(.*\))');
+    return regex.allMatches(comment).length;
+  }
+
+  int get linkCount {
+    var regex = RegExp(r'\[[A-z. ]*\]\(.*\)');
+    return regex.allMatches(comment).length;
+  }
+
+  bool get hasCodeSnippet => comment.contains(r'```');
+
+
   @override
   bool operator ==(Object other) =>
       other is DocData && other.elementName == elementName;

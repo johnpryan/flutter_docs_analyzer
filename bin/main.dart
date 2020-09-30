@@ -41,28 +41,26 @@ void main(List<String> args) async {
     ..sort((a, b) {
       return a.lineCount.compareTo(b.lineCount);
     });
-  print('Name, Is Widget?, Lines, Words, Chars');
+  print([
+    'Name',
+    'Is Widget',
+    'Has Code Snippet',
+    'Has DartPad',
+    'Has YouTube',
+    'Line Count',
+    'Word Count',
+    'Char Count'
+  ].join(','));
   for (var item in sorted) {
-    // print('${item.name.padRight(40)}lines: ${item.lineCount}\twords: ${item.wordCount}\tchars: ${item.charCount}');
-    print(
-        '${item.elementName}, ${item.isWidget}, ${item.lineCount}, ${item.wordCount}, ${item.charCount}');
-  }
-}
-
-class SortedDocStrings implements Comparable<SortedDocStrings> {
-  final String name;
-  final String docstring;
-
-  SortedDocStrings(this.name, this.docstring);
-
-  int get lineCount => docstring.split('\n').length;
-
-  int get charCount => docstring.length;
-
-  int get wordCount => docstring.split(' ').length;
-
-  @override
-  int compareTo(SortedDocStrings other) {
-    return lineCount.compareTo(other.lineCount);
+    print([
+      item.elementName,
+      item.isWidget,
+      item.hasCodeSnippet,
+      item.hasDartPad,
+      item.hasYouTube,
+      item.lineCount,
+      item.wordCount,
+      item.charCount
+    ].join(','));
   }
 }
