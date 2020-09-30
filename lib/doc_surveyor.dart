@@ -52,13 +52,16 @@ Future<DocStats> analyzeDocs(String packageFolder, {bool silent = true}) async {
 class DocStats {
   int publicMemberCount = 0;
   final List<SourceLocation> undocumentedMemberLocations = <SourceLocation>[];
+  final Map<String, String> docstrings = {};
 }
+
 
 class SourceLocation {
   final String displayName;
   final Source source;
   final int line;
   final int column;
+
   SourceLocation(this.displayName, this.source, this.line, this.column);
 
   String get _bullet => !Platform.isWindows ? '•' : '-';
@@ -101,6 +104,19 @@ class _Visitor extends RecursiveAstVisitor
     }
 
     stats.publicMemberCount++;
+    if (!isOverridingMember(node) && node.declaredElement is ClassElement) {
+      if (stats.docstrings
+          .containsKey(node.declaredElement.displayName)) {
+        // stats.docstrings[node.declaredElement.displayName]++;
+      } else {
+        stats.docstrings[node.declaredElement.displayName] = node.documentationComment.tokens.join('\n');
+        // var docstring = String.fromCharCodes(node.documentationComment.tokens.);
+        // print(node.declaredElement.displayName);
+        // for (var token in node.documentationComment.tokens) {
+        //   print(token);
+        // }
+      }
+    }
 
     if (node.documentationComment == null && !isOverridingMember(node)) {
       var location = lineInfo.getLocation(node.offset);

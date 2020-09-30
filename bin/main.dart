@@ -25,15 +25,41 @@ import 'package:flutter_docs_analyzer/doc_surveyor.dart';
 ///
 void main(List<String> args) async {
   var stats = await analyzeDocs(args[0]);
-  print('${stats.publicMemberCount} public members');
-  print('Members without docs:');
+  // print('${stats.publicMemberCount} public members');
+  // print('Members without docs:');
   var locations = stats.undocumentedMemberLocations;
-  for (var location in locations) {
-    print(location.asString());
-  }
+  // for (var location in locations) {
+    // print(location.asString());
+  // }
 
   var score =
       ((stats.publicMemberCount - locations.length) / stats.publicMemberCount)
           .toStringAsFixed(2);
-  print('Score: $score');
+  // print('Score: $score');
+
+  var sorted = <SortedDocStrings>[];
+  for (var name in stats.docstrings.keys) {
+    sorted.add(SortedDocStrings(name, stats.docstrings[name]));
+  }
+  sorted.sort();
+  print('name, lines, words, chars');
+  for (var item in sorted) {
+    // print('${item.name.padRight(40)}lines: ${item.lineCount}\twords: ${item.wordCount}\tchars: ${item.charCount}');
+    print('${item.name}, ${item.lineCount}, ${item.wordCount}, ${item.charCount}');
+  }
+}
+
+class SortedDocStrings implements Comparable<SortedDocStrings> {
+  final String name;
+  final String docstring;
+  SortedDocStrings(this.name, this.docstring);
+
+  int get lineCount => docstring.split('\n').length;
+  int get charCount => docstring.length;
+  int get wordCount => docstring.split(' ').length;
+
+  @override
+  int compareTo(SortedDocStrings other) {
+    return lineCount.compareTo(other.lineCount);
+  }
 }
