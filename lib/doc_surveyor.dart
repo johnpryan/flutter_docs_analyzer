@@ -52,9 +52,29 @@ Future<DocStats> analyzeDocs(String packageFolder, {bool silent = true}) async {
 class DocStats {
   int publicMemberCount = 0;
   final List<SourceLocation> undocumentedMemberLocations = <SourceLocation>[];
-  final Map<String, String> docstrings = {};
+  final Set<DocData> docData = {};
 }
 
+class DocData {
+  final String elementName;
+  final String comment;
+  final bool isWidget;
+
+  DocData(this.elementName, this.isWidget, this.comment);
+
+  int get lineCount => comment.split('\n').length;
+
+  int get charCount => comment.length;
+
+  int get wordCount => comment.split(' ').length;
+
+  @override
+  bool operator ==(Object other) =>
+      other is DocData && other.elementName == elementName;
+
+  @override
+  int get hashCode => elementName.hashCode;
+}
 
 class SourceLocation {
   final String displayName;
@@ -105,16 +125,17 @@ class _Visitor extends RecursiveAstVisitor
 
     stats.publicMemberCount++;
     if (!isOverridingMember(node) && node.declaredElement is ClassElement) {
-      if (stats.docstrings
-          .containsKey(node.declaredElement.displayName)) {
+      if (stats.docData.contains(node.declaredElement.displayName)) {
+        // TODO: Is it OK to skip in this case?
         // stats.docstrings[node.declaredElement.displayName]++;
       } else {
-        stats.docstrings[node.declaredElement.displayName] = node.documentationComment.tokens.join('\n');
-        // var docstring = String.fromCharCodes(node.documentationComment.tokens.);
-        // print(node.declaredElement.displayName);
-        // for (var token in node.documentationComment.tokens) {
-        //   print(token);
-        // }
+        var element = node.declaredElement;
+        var isWidget = false;
+        if (element is ClassElement) {
+          isWidget = isWidgetType(element.thisType);
+        }
+        stats.docData.add(DocData(node.declaredElement.displayName, isWidget,
+            node.documentationComment.tokens.join('\n')));
       }
     }
 
