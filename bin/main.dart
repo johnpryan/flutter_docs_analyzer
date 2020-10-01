@@ -47,6 +47,8 @@ void main(List<String> args) async {
     'Has Code Snippet',
     'Has DartPad',
     'Has YouTube',
+    'Reference Count',
+    'Link Count',
     'Line Count',
     'Word Count',
     'Char Count'
@@ -58,6 +60,8 @@ void main(List<String> args) async {
       item.hasCodeSnippet,
       item.hasDartPad,
       item.hasYouTube,
+      item.referenceCount,
+      item.linkCount,
       item.lineCount,
       item.wordCount,
       item.charCount
