@@ -14,28 +14,28 @@
 
 import 'package:flutter_docs_analyzer/doc_surveyor.dart';
 
-/// Example run:
+/// Prints a CSV file containing docstring stats:
+///
+/// - Name
+/// - Is Widget
+/// - Has Code Snippet
+/// - Has DartPad
+/// - Has YouTube
+/// - Reference Count
+/// - Link Count
+/// - Line Count
+/// - Word Count
+/// - Char Count
+///
+/// Example:
 ///
 /// $ dart lib/main.dart <path-to-provider-repo>/packages/provider
-/// 122 public members
-/// Members without docs:
-/// Void • <path-to-provider-repo>/packages/provider/lib/src/proxy_provider.dart • 107:1
-/// NumericProxyProvider • <path-to-provider-repo>/packages/provider/lib/src/proxy_provider.dart • 177:1
-/// Score: 0.98
 ///
+/// To analyze the Flutter SDK, use the version of dart provided in `bin/dart`:
+///
+/// $ /path/to/flutter/bin/dart bin/main.dart /path/to/flutter/packages/flutter
 void main(List<String> args) async {
   var stats = await analyzeDocs(args[0]);
-  // print('${stats.publicMemberCount} public members');
-  // print('Members without docs:');
-  var locations = stats.undocumentedMemberLocations;
-  // for (var location in locations) {
-  // print(location.asString());
-  // }
-
-  var score =
-      ((stats.publicMemberCount - locations.length) / stats.publicMemberCount)
-          .toStringAsFixed(2);
-  // print('Score: $score');
 
   var sorted = List<DocData>.from(stats.docData)
     ..sort((a, b) {
