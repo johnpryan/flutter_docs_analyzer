@@ -44,12 +44,15 @@ void main(List<String> args) async {
   print([
     'Name',
     'Is Widget',
-    'Has Code Snippet',
-    'Has DartPad',
+    'Has Code',
+    'Has Snippet Sample',
+    'Has Application Sample',
+    'Has DartPad Sample',
     'Has YouTube',
     'Reference Count',
     'Link Count',
-    'Line Count',
+    'Prose Line Count',
+    'Code Line Count',
     'Word Count',
     'Char Count'
   ].join(','));
@@ -58,11 +61,14 @@ void main(List<String> args) async {
       item.elementName,
       item.isWidget,
       item.hasCodeSnippet,
-      item.hasDartPad,
+      item.hasSnippetSample,
+      item.hasApplicationSample,
+      item.hasDartPadSample,
       item.hasYouTube,
       item.referenceCount,
       item.linkCount,
       item.lineCount,
+      item.codeLineCount,
       item.wordCount,
       item.charCount
     ].join(','));

@@ -8,7 +8,7 @@ void main() {
     test('doc comment metrics', () {
       var docData = DocData('Flow', true, docCommentGood);
       expect(docData.hasYouTube, isFalse);
-      expect(docData.hasDartPad, isTrue);
+      expect(docData.hasDartPadSample, isTrue);
       expect(docData.referenceCount, equals(13));
       expect(docData.hasCodeSnippet, true);
     });

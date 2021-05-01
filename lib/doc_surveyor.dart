@@ -62,25 +62,57 @@ class DocData {
 
   DocData(this.elementName, this.isWidget, this.comment);
 
-  int get lineCount => comment.split('\n').length;
+  /// Count of comment lines, not including lines of code in the comment.
+  int get lineCount => commentWithoutCode.split('\n').length;
 
-  int get charCount => comment.length;
+  /// Count of comment characters, not including any code samples or `@tool`
+  /// lines in the comment, after collapsing each run of whitespace to a single
+  /// space.
+  int get charCount => commentWithoutCode.replaceAll(RegExp(r'\s+'), ' ').length;
 
-  int get wordCount => comment.split(' ').length;
+  /// Count of comment words, not including words in any kind of code in the
+  /// comment.
+  int get wordCount => commentWithoutCode.split(RegExp(r'\s+')).length;
+
+  /// Gets the number of code lines in the comment, regardless of whether it is
+  /// in a sample or not.
+  int get codeLineCount => onlyCodeFromComments.split('\n').length;
 
   bool get hasYouTube => comment.contains('@youtube');
 
-  bool get hasDartPad => comment.contains('@tool dartpad');
+  bool get hasDartPadSample => comment.contains('@tool dartpad');
+
+  bool get hasApplicationSample => comment.contains('@tool sample');
+
+  bool get hasSnippetSample => comment.contains('@tool snippet');
 
   bool get hasSeeAlso => comment.contains('See also:');
 
+  /// Includes the description text inside of an "@tool"-based sample, but not
+  /// the code itself, any dartdoc tags, or doc comment markers.
+  String get commentWithoutCode => comment.replaceAll(RegExp(r'([`]{3}.*?[`]{3}|\{@\w+[^}]*\}|/// ?)', dotAll: true), '');
+
+  /// Returns only the code parts of the comment (the opposite of [commentWithoutCode]).
+  String get onlyCodeFromComments {
+    return comment.replaceAllMapped(RegExp(r'[`]{3}\w*[^\n]*\n(?<code>.*?)[`]{3}', dotAll: true), (Match baseMatch) {
+      RegExpMatch match = baseMatch;
+      return match.namedGroup('code') ?? '';
+    });
+  }
+
+  /// Strips all tool blocks from output, so it does not include the description
+  /// of the sample code, or doc comment markers.
+  String get commentWithoutTools {
+    return comment.replaceAll(RegExp(r'(\{@tool ([^}]*)\}.*?\{@end-tool\}|/// ?)', dotAll: true), '');
+  }
+
   int get referenceCount {
-    var regex = RegExp(r'\[[A-z. ]*\](?!\(.*\))');
+    var regex = RegExp(r'\[[. \w]*\](?!\(.*\))');
     return regex.allMatches(comment).length;
   }
 
   int get linkCount {
-    var regex = RegExp(r'\[[A-z. ]*\]\(.*\)');
+    var regex = RegExp(r'\[[. \w]*\]\(.*\)');
     return regex.allMatches(comment).length;
   }
 
